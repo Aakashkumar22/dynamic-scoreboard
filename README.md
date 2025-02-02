@@ -71,11 +71,14 @@ Edit
     requirements.txt        # Python dependencies
 
 
+
 ## Future Improvements 🚀
-**User Authentication**: Add login and user management for personalized scorecards 🔒.
-**Additional Chart Types**: Add more types of data visualizations like line charts 📈.
-**Mobile Support**: Make the UI responsive for better mobile support 📱.
-**Enhanced File Parsing**: Improve support for various file formats (e.g., .txt, .json) 📊.
+
+- **User Authentication**: Add login and user management for personalized scorecards 🔒.
+- **Additional Chart Types**: Add more types of data visualizations like line charts 📈.
+- **Mobile Support**: Make the UI responsive for better mobile support 📱.
+- **Enhanced File Parsing**: Improve support for various file formats (e.g., .txt, .json) 📊.
+
 
 ## License 📝
 This project is licensed under the MIT License - see the LICENSE file for details.
