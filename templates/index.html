@@ -38,6 +38,21 @@
         <button type="submit">Upload</button>
     </form>
 
+    <!-- Set Weights Form -->
+    <h2>Set Category Weights</h2>
+    <form action="/set_weights" method="post">
+        <label for="productivity_weight">Productivity Weight:</label>
+        <input type="number" name="productivity_weight" step="0.1" value="1" required><br><br>
+
+        <label for="quality_weight">Quality Weight:</label>
+        <input type="number" name="quality_weight" step="0.1" value="1" required><br><br>
+
+        <label for="timeliness_weight">Timeliness Weight:</label>
+        <input type="number" name="timeliness_weight" step="0.1" value="1" required><br><br>
+
+        <button type="submit">Update Weights</button>
+    </form>
+
     <!-- Display Data -->
     {% if data %}
         <h2>Submitted Data</h2>
@@ -46,15 +61,21 @@
                 <th>Category</th>
                 <th>Criteria</th>
                 <th>Score</th>
+                <th>Weight</th>
+                <th>Weighted Score</th>
             </tr>
             {% for record in data %}
             <tr>
                 <td>{{ record.Category }}</td>
                 <td>{{ record.Criteria }}</td>
                 <td>{{ record.Score }}</td>
+                <td>{{ record.Weight }}</td>
+                <td>{{ record.Weighted_Score }}</td>
             </tr>
             {% endfor %}
         </table>
     {% endif %}
 </body>
 </html>
+
+

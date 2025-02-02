@@ -13,17 +13,30 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # CSV file for storing data
 DATA_FILE = "scorecard_data.csv"
+WEIGHT_FILE = "weights.csv"  # File for storing weights
 
 # Ensure the CSV file exists with correct headers
 if not os.path.exists(DATA_FILE):
     df = pd.DataFrame(columns=["Category", "Criteria", "Score"])
     df.to_csv(DATA_FILE, index=False)
 
+# Ensure the weights file exists with correct headers
+if not os.path.exists(WEIGHT_FILE):
+    weight_df = pd.DataFrame(columns=["Category", "Weight"])
+    weight_df.to_csv(WEIGHT_FILE, index=False)
+
 
 @app.route('/')
 def home():
-    ""Render the home page and display stored data."""
+    """Render the home page and display stored data."""
     data = pd.read_csv(DATA_FILE).fillna("")  # Prevent NaN values in the table
+    weights = pd.read_csv(WEIGHT_FILE).set_index("Category")  # Load weights
+
+    # Add weight to each row of data
+    data["Weight"] = data["Category"].apply(lambda x: weights.loc[x, "Weight"] if x in weights.index else 1)
+
+    # Calculate the weighted score for each row
+    data["Weighted Score"] = data["Score"] * data["Weight"]
     return render_template('index.html', data=data.to_dict(orient="records"))
 
 
@@ -106,7 +119,24 @@ def upload_file():
     return redirect(url_for('home'))
 
 
+@app.route('/set_weights', methods=['GET', 'POST'])
+def set_weights():
+    """Allow user to set dynamic weights for each category."""
+    if request.method == 'POST':
+        # Get weights from form and save to weights file
+        category_weights = {
+            "Productivity": request.form.get('productivity_weight', type=float),
+            "Quality": request.form.get('quality_weight', type=float),
+            "Timeliness": request.form.get('timeliness_weight', type=float)
+        }
+        weight_df = pd.DataFrame(list(category_weights.items()), columns=["Category", "Weight"])
+        weight_df.to_csv(WEIGHT_FILE, index=False)
+        flash("Weights updated successfully!", 'success')
+        return redirect(url_for('home'))
+    
+    # Render the weight settings page
+    return render_template('set_weights.html')
+
+
 if __name__ == '__main__':
     app.run(port=90, debug=True)
-
-
