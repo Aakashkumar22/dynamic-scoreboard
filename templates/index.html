@@ -90,16 +90,14 @@
                 <th>Category</th>
                 <th>Criteria</th>
                 <th>Score</th>
-                <th>Weight</th>
-                <th>Weighted Score</th>
+               
             </tr>
             {% for record in data %}
             <tr>
                 <td>{{ record.Category }}</td>
                 <td>{{ record.Criteria }}</td>
                 <td>{{ record.Score }}</td>
-                <td>{{ record.Weight }}</td>
-                <td>{{ record.Weighted_Score }}</td>
+                
             </tr>
             {% endfor %}
         </table>

@@ -5,16 +5,6 @@ import plotly.express as px
 import plotly.io as pio
 from werkzeug.utils import secure_filename
 import plotly.express as px
-import plotly.io as pio
-from werkzeug.utils import secure_filename
-import smtplib
-from email.message import EmailMessage
-import os
-import pandas as pd
-from flask import Flask, render_template, request, redirect, url_for, flash, send_file
-import plotly.express as px
-import plotly.io as pio
-from werkzeug.utils import secure_filename
 import smtplib
 from email.message import EmailMessage
 
@@ -29,6 +19,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # CSV file for storing data
 DATA_FILE = "scorecard_data.csv"
 WEIGHT_FILE = "weights.csv"  # File for storing weights
+
+
 
 # Ensure the CSV file exists with correct headers
 if not os.path.exists(DATA_FILE):
@@ -215,33 +207,51 @@ def export_pdf():
 
 @app.route('/share', methods=['POST'])
 def share():
-    email = request.form['email']
-    subject = "Shared Scorecard Data"
-    body = "Please find the attached scorecard data."
-    
+    recipient_email = request.form['email']
     df = pd.read_csv(DATA_FILE)
-    file_path = "scorecard_data.csv"
-    df.to_csv(file_path, index=False)
+    filepath = "scorecard.csv"
+    df.to_csv(filepath, index=False)
     
-    msg = EmailMessage()
-    msg['Subject'] = subject
-    msg['From'] = "your-email@example.com"
-    msg['To'] = email
-    msg.set_content(body)
+    sender_email = "your-email@example.com"
+    sender_password = "your-password"
     
-    with open(file_path, "rb") as f:
-        msg.add_attachment(f.read(), maintype="text", subtype="csv", filename=file_path)
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+    msg['Subject'] = "Shared Scorecard"
     
-    try:
-        with smtplib.SMTP('smtp.example.com', 587) as server:
-            server.starttls()
-            server.login("your-email@example.com", "your-password")
-            server.send_message(msg)
-        flash("Email sent successfully!", 'success')
-    except Exception as e:
-        flash(f"Error sending email: {str(e)}", 'danger')
+    body = "Please find the attached scorecard."
+    msg.attach(MIMEText(body, 'plain'))
     
+    attachment = open(filepath, "rb")
+    part = MIMEBase('application', 'octet-stream')
+    part.set_payload(attachment.read())
+    encoders.encode_base64(part)
+    part.add_header('Content-Disposition', f"attachment; filename={filepath}")
+    msg.attach(part)
+    
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(sender_email, sender_password)
+    server.send_message(msg)
+    server.quit()
+    
+    flash("Email sent successfully!", "success")
     return redirect(url_for('home'))
+
+@app.route('/generate_link', methods=['POST'])
+def generate_link():
+    unique_id = str(uuid.uuid4())
+    shared_links[unique_id] = pd.read_csv(DATA_FILE).to_dict(orient='records')
+    return f"Your shareable link: http://127.0.0.1:90/share/{unique_id}"  # Update with actual server URL
+
+@app.route('/share/<unique_id>')
+def view_shared_scorecard(unique_id):
+    if unique_id in shared_links:
+        data = shared_links[unique_id]
+        return render_template('shared_scorecard.html', data=data)
+    else:
+        return "Invalid or expired link."
 
 
 if __name__ == '__main__':
