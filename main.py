@@ -22,7 +22,7 @@ if not os.path.exists(DATA_FILE):
 
 @app.route('/')
 def home():
-    """Render the home page and display stored data."""
+    ""Render the home page and display stored data."""
     data = pd.read_csv(DATA_FILE).fillna("")  # Prevent NaN values in the table
     return render_template('index.html', data=data.to_dict(orient="records"))
 
