@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Scorecard Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        h1 { color: #333; }
+        form { margin-bottom: 20px; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); width: 50%; margin: auto; }
+        input, select, button { margin: 5px; padding: 10px; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        table { width: 80%; margin: auto; border-collapse: collapse; background: white; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #ccc; }
+        th { background-color: #007bff; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Dynamic Scorecard Tool</h1>
+    
+    <!-- Form for manual data submission -->
+    <form action="/submit" method="post">
+        <select name="category" required>
+            <option value="">Select Category</option>
+            <option value="Productivity">Productivity</option>
+            <option value="Quality">Quality</option>
+            <option value="Timeliness">Timeliness</option>
+        </select>
+        <input type="text" name="criteria" placeholder="Criteria" required>
+        <input type="number" name="score" placeholder="Score" step="0.1" required>
+        <button type="submit">Submit</button>
+    </form>
+    
+    <!-- File upload form -->
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv,.xlsx" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <!-- Display Data -->
+    {% if data %}
+        <h2>Submitted Data</h2>
+        <table>
+            <tr>
+                <th>Category</th>
+                <th>Criteria</th>
+                <th>Score</th>
+            </tr>
+            {% for record in data %}
+            <tr>
+                <td>{{ record.Category }}</td>
+                <td>{{ record.Criteria }}</td>
+                <td>{{ record.Score }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>
