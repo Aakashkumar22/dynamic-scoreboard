@@ -4,6 +4,19 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import plotly.express as px
 import plotly.io as pio
 from werkzeug.utils import secure_filename
+import plotly.express as px
+import plotly.io as pio
+from werkzeug.utils import secure_filename
+import smtplib
+from email.message import EmailMessage
+import os
+import pandas as pd
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file
+import plotly.express as px
+import plotly.io as pio
+from werkzeug.utils import secure_filename
+import smtplib
+from email.message import EmailMessage
 
 app = Flask(__name__)
 app.secret_key = '116'  # For flash messages
@@ -170,8 +183,67 @@ def set_weights():
     # Render the weight settings page
     return render_template('set_weights.html')
 
+@app.route('/export/csv', methods=['POST'])
+def export_csv():
+    return send_file(DATA_FILE, as_attachment=True)
+
+@app.route('/export/excel', methods=['POST'])
+def export_excel():
+    df = pd.read_csv(DATA_FILE)
+    excel_path = "scorecard_data.xlsx"
+    df.to_excel(excel_path, index=False)
+    return send_file(excel_path, as_attachment=True)
+
+@app.route('/export/pdf', methods=['POST'])
+def export_pdf():
+    from fpdf import FPDF
+    df = pd.read_csv(DATA_FILE)
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    
+    pdf.cell(200, 10, txt="Scorecard Data", ln=True, align='C')
+    pdf.ln(10)
+    
+    for index, row in df.iterrows():
+        pdf.cell(200, 10, txt=f"{row['Category']} - {row['Criteria']} - Score: {row['Score']}", ln=True)
+    
+    pdf_path = "scorecard_data.pdf"
+    pdf.output(pdf_path)
+    return send_file(pdf_path, as_attachment=True)
+
+@app.route('/share', methods=['POST'])
+def share():
+    email = request.form['email']
+    subject = "Shared Scorecard Data"
+    body = "Please find the attached scorecard data."
+    
+    df = pd.read_csv(DATA_FILE)
+    file_path = "scorecard_data.csv"
+    df.to_csv(file_path, index=False)
+    
+    msg = EmailMessage()
+    msg['Subject'] = subject
+    msg['From'] = "your-email@example.com"
+    msg['To'] = email
+    msg.set_content(body)
+    
+    with open(file_path, "rb") as f:
+        msg.add_attachment(f.read(), maintype="text", subtype="csv", filename=file_path)
+    
+    try:
+        with smtplib.SMTP('smtp.example.com', 587) as server:
+            server.starttls()
+            server.login("your-email@example.com", "your-password")
+            server.send_message(msg)
+        flash("Email sent successfully!", 'success')
+    except Exception as e:
+        flash(f"Error sending email: {str(e)}", 'danger')
+    
+    return redirect(url_for('home'))
+
 
 if __name__ == '__main__':
     app.run(port=90, debug=True)
-
 

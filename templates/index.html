@@ -14,6 +14,13 @@
         table { width: 80%; margin: auto; border-collapse: collapse; background: white; margin-top: 20px; }
         th, td { padding: 10px; border: 1px solid #ccc; }
         th { background-color: #007bff; color: white; }
+        
+        .export-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
 
         /* Chart styling */
         .chart-container {
@@ -24,11 +31,23 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Email sharing section */
+        .share-container {
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            margin: auto;
+        }
     </style>
 </head>
 <body>
     <h1>Dynamic Scorecard Tool</h1>
-    
+
+
     <!-- Form for manual data submission -->
     <form action="/submit" method="post">
         <select name="category" required>
@@ -108,5 +127,30 @@
             {{ radar_chart|safe }}
         </div>
     {% endif %}
+
+
+      <!-- Export Buttons -->
+      <div class="export-container">
+        <form action="/export/csv" method="post">
+            <button type="submit">Export CSV</button>
+        </form>
+        <form action="/export/excel" method="post">
+            <button type="submit">Export Excel</button>
+        </form>
+        <form action="/export/pdf" method="post">
+            <button type="submit">Export PDF</button>
+        </form>
+    </div>
+
+    <!-- Email Sharing Form -->
+    <div class="share-container">
+        <h2>Share Scorecard via Email</h2>
+        <form action="/share" method="post">
+            <input type="email" name="email" placeholder="Enter recipient email" required>
+            <button type="submit">Send Email</button>
+        </form>
+    </div>
 </body>
 </html>
+
+
