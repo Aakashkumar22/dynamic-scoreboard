@@ -14,6 +14,16 @@
         table { width: 80%; margin: auto; border-collapse: collapse; background: white; margin-top: 20px; }
         th, td { padding: 10px; border: 1px solid #ccc; }
         th { background-color: #007bff; color: white; }
+
+        /* Chart styling */
+        .chart-container {
+            width: 80%;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -75,7 +85,28 @@
             {% endfor %}
         </table>
     {% endif %}
+
+    <!-- Button to visualize the data -->
+    <form method="POST" action="{{ url_for('visualize_data') }}">
+        <button type="submit" class="btn btn-primary">Visualize Data</button>
+    </form>
+
+    <!-- Visualize the charts only if the user clicked on the button -->
+    {% if bar_chart %}
+        <div class="chart-container">
+            <h3>Category-wise Breakdown (Bar Chart)</h3>
+            {{ bar_chart|safe }}
+        </div>
+
+        <div class="chart-container">
+            <h3>Category Distribution (Pie Chart)</h3>
+            {{ pie_chart|safe }}
+        </div>
+
+        <div class="chart-container">
+            <h3>Performance Across Categories (Radar Chart)</h3>
+            {{ radar_chart|safe }}
+        </div>
+    {% endif %}
 </body>
 </html>
-
-

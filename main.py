@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for, flash
+import plotly.express as px
+import plotly.io as pio
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -28,7 +30,14 @@ if not os.path.exists(WEIGHT_FILE):
 
 @app.route('/')
 def home():
-    """Render the home page and display stored data."""
+    """Render the home page with data, but no visualizations yet."""
+    data = pd.read_csv(DATA_FILE).fillna("")  # Prevent NaN values in the table
+    return render_template('index.html', data=data.to_dict(orient="records"), bar_chart=None, pie_chart=None, radar_chart=None)
+
+
+@app.route('/visualize_data', methods=['POST'])
+def visualize_data():
+    """Generate the visualizations when the 'Visualize Data' button is clicked."""
     data = pd.read_csv(DATA_FILE).fillna("")  # Prevent NaN values in the table
     weights = pd.read_csv(WEIGHT_FILE).set_index("Category")  # Load weights
 
@@ -37,7 +46,31 @@ def home():
 
     # Calculate the weighted score for each row
     data["Weighted Score"] = data["Score"] * data["Weight"]
-    return render_template('index.html', data=data.to_dict(orient="records"))
+    
+    # Summary Calculations
+    total_score = data["Weighted Score"].sum()
+    category_summary = data.groupby("Category").agg({"Weighted Score": "sum"}).reset_index()
+
+    # Create Bar Chart for category-wise breakdown
+    bar_fig = px.bar(category_summary, x="Category", y="Weighted Score", title="Category-wise Breakdown", labels={"Weighted Score": "Total Score"})
+    bar_chart = pio.to_html(bar_fig, full_html=False)
+
+    # Create Pie Chart for category distribution
+    pie_fig = px.pie(category_summary, names="Category", values="Weighted Score", title="Category-wise Distribution")
+    pie_chart = pio.to_html(pie_fig, full_html=False)
+
+    # Create Radar Chart for category performance
+    radar_fig = px.line_polar(category_summary, r="Weighted Score", theta="Category", line_close=True, title="Performance Across Categories")
+    radar_chart = pio.to_html(radar_fig, full_html=False)
+
+    return render_template(
+        'index.html',
+        data=data.to_dict(orient="records"),
+        total_score=total_score,
+        bar_chart=bar_chart,
+        pie_chart=pie_chart,
+        radar_chart=radar_chart
+    )
 
 
 @app.route('/submit', methods=['POST'])
@@ -140,3 +173,5 @@ def set_weights():
 
 if __name__ == '__main__':
     app.run(port=90, debug=True)
+
+
