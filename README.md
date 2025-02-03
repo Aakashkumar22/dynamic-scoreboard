@@ -50,12 +50,12 @@ Set up the following environment variables for Gmail to send emails:
 You can set these variables directly in your code or use a .env file with a library like python-dotenv to manage environment variables.
 
 ## How to Use 🎯
-**Submit Data** : Choose a category, enter the criteria, and provide the score. Click the Submit button. ✍️
-**Upload File**: Upload a CSV or Excel file containing performance data. 📂
-**Set Weights**: Update the weights for each category (Productivity, Quality, Timeliness) to adjust the score calculation. ⚖️
-**Visualize Data**: Click the Visualize Data button to view your data in bar, pie, and radar chart formats. 📊
-**Export**: Export your scorecard data in your preferred format (CSV, Excel, PDF). 💾
-**Share via Email**: Enter an email address and click Send Email to share the scorecard with the recipient. 📧
+- **Submit Data** : Choose a category, enter the criteria, and provide the score. Click the Submit button. ✍️
+- **Upload File**: Upload a CSV or Excel file containing performance data. 📂
+- **Set Weights**: Update the weights for each category (Productivity, Quality, Timeliness) to adjust the score calculation. ⚖️
+- **Visualize Data**: Click the Visualize Data button to view your data in bar, pie, and radar chart formats. 📊
+- **Export**: Export your scorecard data in your preferred format (CSV, Excel, PDF). 💾
+- **Share via Email**: Enter an email address and click Send Email to share the scorecard with the recipient. 📧
 
 ## File Structure 📁
 bash
@@ -69,6 +69,41 @@ Edit
             style.css      # Custom CSS
     app.py                  # Main Flask app
     requirements.txt        # Python dependencies
+## Output
+## Data Input Interface Upload files via Upload Option.
+<img width="524" alt="image" src="https://github.com/user-attachments/assets/310c2914-9d3c-4294-9232-f27f5b4a45d6" />
+<img width="497" alt="image" src="https://github.com/user-attachments/assets/1166e29c-09b2-4919-b453-fa4f301ea791" />
+
+## Upload data manually.
+<img width="524" alt="image" src="https://github.com/user-attachments/assets/e222725d-798c-41dc-bdd9-0c90e2578159" />
+<img width="797" alt="image" src="https://github.com/user-attachments/assets/b73e2426-0cc8-4032-ba13-8d959efe8e3a" />
+
+## Dynamic Customization of weights.
+<img width="565" alt="image" src="https://github.com/user-attachments/assets/0bc8d79d-b641-4c9e-9843-96770a86b061" />
+
+## Data Visualization.
+<img width="497" alt="image" src="https://github.com/user-attachments/assets/a45ac3c1-17b8-4c5f-a351-21c004842efd" />
+<img width="698" alt="image" src="https://github.com/user-attachments/assets/0a66e5c0-4be5-43ac-af91-f6d2e097e87c" />
+<img width="723" alt="image" src="https://github.com/user-attachments/assets/4792bdbc-210a-4e3b-9f79-f6d4e6d6a73e" />
+<img width="652" alt="image" src="https://github.com/user-attachments/assets/b4650be3-c1dd-47d2-91db-445e4ff7276f" />
+
+## Export Feature.
+<img width="878" alt="image" src="https://github.com/user-attachments/assets/0c931f4a-c351-4b66-ba92-eb5a30d7e6c2" />
+<img width="542" alt="image" src="https://github.com/user-attachments/assets/5c152b91-7130-46d2-8d4a-4bb20ac141ce" />
+
+## Sharing Feature.
+<img width="449" alt="image" src="https://github.com/user-attachments/assets/01043ba4-ac0e-4396-a23f-dda06466502a" />
+
+
+
+
+
+
+
+
+
+
+
 
 
 
